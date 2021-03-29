@@ -1,12 +1,15 @@
+import { ActivityStore } from './activity-store';
 import { UserStore } from './user-store';
 // import { TenantStore } from './tenant-store';
 
 export class RootStore {
   userStore: UserStore;
+  // activityStore: ActivityStore;
   // tenantStore;
 
   constructor() {
     this.userStore = new UserStore(this);
+    // this.activityStore = new ActivityStore(this);
     // this.tenantStore = new TenantStore(this);
   }
 }

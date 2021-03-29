@@ -33,6 +33,7 @@ export namespace Components {
         "enabledStrategies": any;
     }
     interface OaeDashboard {
+        "activityItems": any[];
     }
     interface OaeGroups {
     }
@@ -60,6 +61,8 @@ export namespace Components {
     interface OaeLibraryTable {
     }
     interface OaeNewsfeed {
+        "activityItem": any;
+        "key": any;
     }
     interface OaeSidebar {
         "avatar": string;
@@ -254,6 +257,7 @@ declare namespace LocalJSX {
         "enabledStrategies"?: any;
     }
     interface OaeDashboard {
+        "activityItems"?: any[];
     }
     interface OaeGroups {
     }
@@ -281,6 +285,8 @@ declare namespace LocalJSX {
     interface OaeLibraryTable {
     }
     interface OaeNewsfeed {
+        "activityItem"?: any;
+        "key"?: any;
     }
     interface OaeSidebar {
         "avatar"?: string;

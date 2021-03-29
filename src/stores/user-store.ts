@@ -27,7 +27,8 @@ export class UserStore {
   }
 
   setCurrentUser(user) {
-    this.currentUser = new User(this, { anonymous: user.anon, locale: user.locale, tenant: new Tenant(this, user.tenant) });
+    const newUser = new User(this, { anonymous: user.anon, locale: user.locale, tenant: new Tenant(this, user.tenant) });
+    this.currentUser = newUser;
   }
 
   setUserRedirectUrl(url) {
@@ -47,13 +48,14 @@ export class UserStore {
     try {
       const response = yield fetch('/api/me');
       const data = yield response.json();
-      return data;
+      return new User(this.rootStore, data);
+      // return data;
     } catch (error: unknown) {
       log.error(`Unable to get current user from the API`, error);
     }
   }
 
   get describeUser() {
-    return `Current user is ${this.currentUser.anonymous ? 'a ghost' : 'logged in'} and belongs to tenant ${this.currentUser.tenant.displayName}`;
+    return `Current user is ${this.currentUser.anonymous ? 'a ghost' : this.currentUser.displayName} and belongs to tenant ${this.currentUser.tenant.displayName}`;
   }
 }

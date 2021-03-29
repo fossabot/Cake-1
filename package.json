@@ -28,11 +28,13 @@
     "xo": "^0.38.2"
   },
   "dependencies": {
+    "@jsdevtools/humanize-anything": "^1.1.1",
     "@material/mwc-button": "^0.20.0",
     "@material/mwc-dialog": "^0.20.0",
     "@material/mwc-textfield": "^0.20.0",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "anylogger": "^1.0.10",
+    "date-fns": "^2.19.0",
     "mobx": "6.1.8",
     "ramda": "latest",
     "ulog": "^2.0.0-beta.18"

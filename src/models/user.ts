@@ -6,20 +6,42 @@ export class User {
   anonymous: boolean;
   tenant: Tenant;
   locale: string;
+  acceptedTC: boolean;
+  authenticationStrategy: string;
+  displayName: string;
+  email: string;
+  emailPreferences: string;
+  id: number;
+  isGlobalAdmin: boolean;
+  isTenantAdmin: boolean;
+  needsToAcceptTC: boolean;
+  picture;
+  profilePath: string;
+  publicAlias: string;
+  resourceType = 'user';
+  signatureExpiryDate: number;
+  signature: string;
+  visibility: 'public' | 'private' | 'loggedin';
 
-  constructor(store, { anonymous, locale, tenant }: { anonymous: boolean; locale: string; tenant: Tenant }) {
+  constructor(store, userData) {
     // TODO do we need all these attributes to be observable?
     makeAutoObservable(this, {
-      anonymous: observable,
+      // anonymous: observable,
       // tenant: observable,
-      locale: observable,
+      // locale: observable,
       asBackend: computed,
     });
     this.store = store;
 
-    this.anonymous = anonymous;
-    this.locale = locale;
-    this.tenant = tenant;
+    this.anonymous = userData.anonymous;
+    this.locale = userData.locale;
+    this.tenant = userData.tenant;
+    this.acceptedTC = userData.acceptedTC;
+    this.profilePath = userData.profilePath;
+    this.id = userData.id;
+    this.displayName = userData.displayName;
+    this.email = userData.email;
+    this.emailPreferences = userData.emailPreferences;
   }
 
   get asBackend() {
