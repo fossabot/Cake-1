@@ -13,6 +13,9 @@ export namespace Components {
     }
     interface AppRoot {
     }
+    interface DiscussionPreview {
+        "discussionId": string;
+    }
     interface ExternalAuthStrategy {
         "icon": string;
         "id": string;
@@ -89,6 +92,12 @@ declare global {
     var HTMLAppRootElement: {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
+    };
+    interface HTMLDiscussionPreviewElement extends Components.DiscussionPreview, HTMLStencilElement {
+    }
+    var HTMLDiscussionPreviewElement: {
+        prototype: HTMLDiscussionPreviewElement;
+        new (): HTMLDiscussionPreviewElement;
     };
     interface HTMLExternalAuthStrategyElement extends Components.ExternalAuthStrategy, HTMLStencilElement {
     }
@@ -208,6 +217,7 @@ declare global {
         "app-home": HTMLAppHomeElement;
         "app-profile": HTMLAppProfileElement;
         "app-root": HTMLAppRootElement;
+        "discussion-preview": HTMLDiscussionPreviewElement;
         "external-auth-strategy": HTMLExternalAuthStrategyElement;
         "home-nav": HTMLHomeNavElement;
         "home-search": HTMLHomeSearchElement;
@@ -236,6 +246,9 @@ declare namespace LocalJSX {
         "name"?: string;
     }
     interface AppRoot {
+    }
+    interface DiscussionPreview {
+        "discussionId"?: string;
     }
     interface ExternalAuthStrategy {
         "icon"?: string;
@@ -298,6 +311,7 @@ declare namespace LocalJSX {
         "app-home": AppHome;
         "app-profile": AppProfile;
         "app-root": AppRoot;
+        "discussion-preview": DiscussionPreview;
         "external-auth-strategy": ExternalAuthStrategy;
         "home-nav": HomeNav;
         "home-search": HomeSearch;
@@ -326,6 +340,7 @@ declare module "@stencil/core" {
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "discussion-preview": LocalJSX.DiscussionPreview & JSXBase.HTMLAttributes<HTMLDiscussionPreviewElement>;
             "external-auth-strategy": LocalJSX.ExternalAuthStrategy & JSXBase.HTMLAttributes<HTMLExternalAuthStrategyElement>;
             "home-nav": LocalJSX.HomeNav & JSXBase.HTMLAttributes<HTMLHomeNavElement>;
             "home-search": LocalJSX.HomeSearch & JSXBase.HTMLAttributes<HTMLHomeSearchElement>;

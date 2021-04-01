@@ -8,7 +8,6 @@ import anylogger from 'anylogger';
 const log = anylogger('oae-dashboard');
 
 import '@polymer/iron-icons/iron-icons.js';
-import { actionSheetController } from '@ionic/core';
 
 @Component({
   tag: 'oae-dashboard',
@@ -27,30 +26,28 @@ export class Dashboard {
         userStore.setCurrentUser(currentUser);
       })
       .then(() => flowResult(activityStore.fetchUserActivities()))
-      .then(activities => {
+      .then(() => {
         // TODO
         log.debug('Processed activities');
         log.debug(activityStore.processedActivities);
 
-        this.setActivityItems(activities.items);
-        debugger;
+        this.setActivityItems(activityStore.processedActivities);
       });
   }
 
   setActivityItems(activities) {
     this.activityItems = activities;
-    debugger;
   }
 
   render() {
-    return (
+    return [
       <oae-layout>
         <div>
           {this.activityItems.map(eachActivity => (
             <oae-newsfeed key={eachActivity['oae:activityId']} activityItem={eachActivity} />
           ))}
         </div>
-      </oae-layout>
-    );
+      </oae-layout>,
+    ];
   }
 }

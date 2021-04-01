@@ -1,5 +1,5 @@
-import { flowResult, computed, autorun, makeAutoObservable, observable, flow, action, isComputed } from 'mobx';
-import { map } from 'ramda';
+import { flowResult, computed, autorun, makeAutoObservable, observable, flow } from 'mobx';
+import { both, assocPath, equals, prop, compose, assoc, map } from 'ramda';
 
 import anylogger from 'anylogger';
 const log = anylogger('activity-store');
@@ -25,13 +25,6 @@ export class ActivityStore {
       // Some action we might need to run just once
     });
     this.rootStore = rootStore;
-    // flowResult(this.fetchUserActivities());
-    // this.fetchUserActivities();
-    /*
-    this.syncActivities().then(activities => {
-      this.setActivities(activities);
-    });
-    */
   }
 
   /**
@@ -57,6 +50,7 @@ export class ActivityStore {
   // generateActivityPreviewItems() {}
 
   get processedActivities() {
+    const currentUser = this.rootStore.userStore.currentUser;
     const processActivity = eachActivity => {
       // Move the relevant items (comments, previews, ..) to the top
       // _prepareActivity(me, eachActivity);
@@ -74,10 +68,45 @@ export class ActivityStore {
       // return new ActivityItem(eachActivity, summary, primaryActor, activityItems);
 
       // return eachActivity;
-      return new ActivityItem(eachActivity);
+
+      eachActivity = assoc('actor', this.parseActivityActor(eachActivity.actor, currentUser), eachActivity);
+      const activityItem = new ActivityItem(eachActivity);
+      return activityItem;
     };
 
     return map(processActivity, this.activities);
-    // return this.activities;
+  }
+
+  // Use the most up-to-date profile picture when available
+  parseActivityActor(eachActivityActor, currentUser) {
+    const copySmallPictureFromCurrentUser = assocPath(['picture', 'small'], currentUser.smallPicture);
+    const copyMediumPictureFromCurrentUser = assocPath(['picture', 'medium'], currentUser.mediumPicture);
+    const copyLargePictureFromCurrentUser = assocPath(['picture', 'large'], currentUser.largePicture);
+
+    const getActorId = prop('oae:id');
+    const hasAnyPicture = prop('hasAnyPicture');
+    const sameAsActivityActor = compose(equals(getActorId(eachActivityActor)), prop('id'));
+    const isCurrentUserTheActorAndDoesItHavePictures = both(sameAsActivityActor, hasAnyPicture)(currentUser);
+
+    if (isCurrentUserTheActorAndDoesItHavePictures) {
+      eachActivityActor = compose(copySmallPictureFromCurrentUser, copyMediumPictureFromCurrentUser, copyLargePictureFromCurrentUser)(eachActivityActor);
+    } else {
+      // TODO simplify
+      if (eachActivityActor.image && eachActivityActor.image.url) {
+        eachActivityActor.thumbnailUrl = eachActivityActor.image.url;
+      }
+
+      // TODO simplify
+      if (eachActivityActor['oae:wideImage'] && eachActivityActor['oae:wideImage'].url) {
+        eachActivityActor.wideImageUrl = eachActivityActor['oae:wideImage'].url;
+      }
+
+      // TODO simplify
+      if (eachActivityActor['oae:mimeType']) {
+        eachActivityActor.mime = eachActivityActor['oae:mimeType'];
+      }
+    }
+
+    return eachActivityActor;
   }
 }

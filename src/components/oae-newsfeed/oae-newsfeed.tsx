@@ -6,7 +6,7 @@ import '@polymer/iron-icons/av-icons.js';
 import '@polymer/iron-icons/hardware-icons.js';
 import '@polymer/iron-icons/communication-icons.js';
 
-import { formatRelative } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { humanizeActivityVerb } from '../../helpers/activity';
 import anylogger from 'anylogger';
 const log = anylogger('oae-newsfeed');
@@ -19,7 +19,16 @@ export class NewsFeed {
   @Prop({ mutable: true }) activityItem;
   @Prop() key; // TODO: mandatory otherwise ts throws error?
 
+  componentWillLoad() {
+    log.debug('Component is about to be rendered, here are the details');
+    log.debug(this.activityItem);
+  }
+
   render() {
+    let renderPreview;
+    if (this.activityItem.object.objectType === 'discussion') {
+      renderPreview = <discussion-preview discussionId={this.activityItem.object.id}></discussion-preview>;
+    }
     return (
       <div class="box box-feed">
         <div class="content news-feed">
@@ -28,17 +37,17 @@ export class NewsFeed {
               <div class="level-item">
                 <div class="column is-flex news-feed-nav">
                   <figure class="image avatar-news-feed">
-                    <img class="is-rounded avatar-news-feed" src="assets/images/avatar.jpg" />
+                    <img class="is-rounded avatar-news-feed" src={this.activityItem.primaryActor.mediumPicture} />
                   </figure>
                   <section>
                     <p class="user-info">
-                      <a class="feed-user">{this.activityItem.actor.displayName}</a>
+                      <a class="feed-user">{this.activityItem.primaryActor.displayName}</a>
                       {humanizeActivityVerb(this.activityItem.verb)} a {this.activityItem.object.objectType}
                       <span class="panel-icon icon-feed">
                         <iron-icon icon="icons:cloud-upload"></iron-icon>
                       </span>
                     </p>
-                    <p>{formatRelative(this.activityItem.published, new Date())}</p>
+                    <p>{formatDistance(this.activityItem.published, new Date(), { addSuffix: true })}</p>
                   </section>
                 </div>
               </div>
@@ -51,11 +60,7 @@ export class NewsFeed {
               </p>
             </div>
           </nav>
-          <section class="column news-feed-message">
-            <h5>Group assignment briefing</h5>
-            <p>Here is the briefing for that group assignment we talked about.</p>
-            <oae-tag></oae-tag>
-          </section>
+          {renderPreview}
           <nav class="level bottom-nav-news">
             <div class="level-left">
               <div class="level-item">

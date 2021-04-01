@@ -4,18 +4,18 @@
  * [ ] Disable on submit button on click
  * [x] Submit form and parse response
  * [ ] Spinner somewhere while loading
- * [ ] Display warning if bad credentials
- * [ ] Clear password field after submit if 401 is returned
- * [ ] Focus on username input on loading the modal window
+ * [x] Display warning if bad credentials
+ * [x] Clear password field after submit if 401 is returned
+ * [x] Focus on username input on loading the modal window
  */
 import { Listen, State, Prop, Component, h, Element } from '@stencil/core';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
 
-import rootStore from '../../stores/root-store';
 import { equals, defaultTo, prop, compose, isEmpty, not } from 'ramda';
 const isNotEmpty = compose(not, isEmpty);
 
+import { resetField } from '../../helpers/form';
 import { authenticationAPI } from '../../helpers/authentication';
 const askAuthAPI = authenticationAPI();
 const { tryLDAPFirstLocalAuthSecond, signInViaLDAP: tryLDAPLogin, signInViaLocalAuth: tryLocalAuthLogin } = askAuthAPI;
@@ -50,9 +50,9 @@ export class LocalAuthStrategy {
   async handleSubmit(event: Event) {
     event.preventDefault();
 
-    const usernameField: HTMLInputElement = this.element.querySelector('#username');
+    const usernameField = this.findUsernameField();
     const username = usernameField.value;
-    const passwordField: HTMLInputElement = this.element.querySelector('#password');
+    const passwordField = this.findPasswordField();
     const password = passwordField.value;
 
     const ldapSettings = compose(defaultTo({}), prop(STRATEGY_LDAP))(this.enabledStrategies);
@@ -77,6 +77,18 @@ export class LocalAuthStrategy {
     this.postLogin(responseStatus);
   }
 
+  findPasswordField(): HTMLInputElement {
+    return this.element.querySelector('#password');
+  }
+
+  findUsernameField(): HTMLInputElement {
+    return this.element.querySelector('#username');
+  }
+
+  findSubmitButton(): HTMLElement {
+    return this.element.querySelector('#submit-button');
+  }
+
   /**
    * Finish the login process by showing the correct validation message in case of a failed
    * login attempt, or by redirecting the user in case of a successful login attempt
@@ -95,18 +107,24 @@ export class LocalAuthStrategy {
        * const userStore = rootStore.userStore;
        * window.location.href = userStore.getUserRedirectUrl();
        */
-
       this.validationFailed = false;
       window.location.href = '/dashboard';
     } else if (failedAuthentication) {
-      // show alert message saying credentials not valid
+      // Show alert message saying credentials not valid
       this.validationFailed = true;
+
+      this.clearPasswordField();
     }
   }
 
+  clearPasswordField() {
+    const passwordField = this.findPasswordField();
+    resetField(passwordField);
+    passwordField.focus();
+  }
+
   componentDidLoad() {
-    const button = this.element.querySelector('#submit-button');
-    button.addEventListener('click', async event => {
+    this.findSubmitButton().addEventListener('click', async event => {
       await this.handleSubmit(event);
     });
   }
@@ -119,7 +137,7 @@ export class LocalAuthStrategy {
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <mwc-textfield id="username" minlength="3" maxlength="64" placeholder="Username" required></mwc-textfield>
+        <mwc-textfield dialogInitialFocus id="username" minlength="3" maxlength="64" placeholder="Username" required></mwc-textfield>
         <mwc-textfield type="password" id="password" minlength="3" maxlength="64" placeholder="Password" required></mwc-textfield>
         <mwc-button id="submit-button" slot="primaryAction">
           Sign in

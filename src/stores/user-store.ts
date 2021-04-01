@@ -3,7 +3,7 @@ import { computed, autorun, makeAutoObservable, observable, flow, action } from 
 import anylogger from 'anylogger';
 const log = anylogger('user-store');
 
-import { Tenant } from '../models/tenant';
+// import { Tenant } from '../models/tenant';
 import { User } from '../models/user';
 import { RootStore } from './root-store';
 
@@ -27,8 +27,8 @@ export class UserStore {
   }
 
   setCurrentUser(user) {
-    const newUser = new User(this, { anonymous: user.anon, locale: user.locale, tenant: new Tenant(this, user.tenant) });
-    this.currentUser = newUser;
+    // const newUser = new User({ anonymous: user.anon, locale: user.locale, tenant: new Tenant(this, user.tenant) });
+    this.currentUser = user;
   }
 
   setUserRedirectUrl(url) {
@@ -48,8 +48,8 @@ export class UserStore {
     try {
       const response = yield fetch('/api/me');
       const data = yield response.json();
-      return new User(this.rootStore, data);
-      // return data;
+      const user = new User(data);
+      return user;
     } catch (error: unknown) {
       log.error(`Unable to get current user from the API`, error);
     }

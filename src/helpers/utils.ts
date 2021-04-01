@@ -14,7 +14,8 @@ function getUrlParameters(url) {
 
   replace(
     PARAMETERS_REGEX,
-    (m, key, value) => {
+    (...args) => {
+      const { 1: key, 2: value } = args;
       parameters = assoc(key, value, parameters);
     },
     url,
