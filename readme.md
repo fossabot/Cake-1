@@ -1,4 +1,6 @@
 # Cake
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbrecke%2FCake.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbrecke%2FCake?ref=badge_shield)
+
 
 Experimental new frontend for OAE
 
@@ -69,3 +71,7 @@ surge public my-project.surge.sh
 We recommend using https://www.webpagetest.org/easy with the `Run Lighthouse Audit` option turned on.
 This will give you an in depth look into your app's load performance on the average device connected to the average network.
 For more info on how to use webpagetest check out [this article](https://zoompf.com/blog/2015/07/the-seo-experts-guide-to-web-performance-using-webpagetest-2)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbrecke%2FCake.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbrecke%2FCake?ref=badge_large)
